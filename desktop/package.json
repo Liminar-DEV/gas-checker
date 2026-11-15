@@ -1,0 +1,17 @@
+{
+  "name": "gas-checker",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build --no-bundle",
+    "build:installer": "tauri build",
+    "icons": "tauri icon app-icon.svg",
+    "rules:genkey": "node scripts/rules-crypt.mjs genkey",
+    "rules:encrypt": "node scripts/rules-crypt.mjs encrypt",
+    "rules:decrypt": "node scripts/rules-crypt.mjs decrypt"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.4"
+  }
+}

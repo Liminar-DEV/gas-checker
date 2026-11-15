@@ -1,0 +1,7 @@
+node_modules/
+target/
+target-*/
+.env
+*.key
+desktop/src-tauri/private/
+.claude/

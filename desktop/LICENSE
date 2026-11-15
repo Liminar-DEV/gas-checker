@@ -1,0 +1,61 @@
+Gas Checker License
+Based on the MIT License, with additional restrictions (Section 2).
+
+Copyright (c) 2026 Liminar-DEV and Gas Checker contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, SUBJECT TO THE FOLLOWING CONDITIONS:
+
+1. The above copyright notice and this permission notice (including Section 2)
+   shall be included in all copies or substantial portions of the Software.
+
+2. Anti-evasion restrictions. Notwithstanding Section 1 and anything else in
+   this license, you may NOT, and may NOT permit, assist or instruct others to:
+
+   (a) deobfuscate, decompile, disassemble, reverse engineer, crack, patch,
+       unpack or otherwise tamper with any compiled build of the Software, or
+       attempt to recover, extract, derive or bypass the encryption key, the
+       encrypted rules (including rules_private.rs.enc) or the detection rules
+       they contain, by any means;
+
+   (b) study, analyze, probe or test the Software's detection behavior, its
+       outputs or its results (including by running it against cheat software
+       and observing what it finds) for the purpose of creating, improving,
+       fixing, adapting, hiding or obfuscating any cheat, hacked client,
+       injector or similar software so that it evades detection by the
+       Software.
+
+3. Termination. Any violation of Section 2 automatically terminates all rights
+   granted to you under this license, effective immediately.
+
+4. Not OSI-approved. Because of Section 2 this license is not an open source
+   license as defined by the Open Source Initiative. The source code is
+   published for transparency, auditing and legitimate use.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-----------------------------------------------------------------------------
+Справочный перевод раздела 2 (при расхождениях приоритет у английского текста)
+
+2. Запрещено (самому, а также разрешать, помогать или поручать другим):
+   (а) деобфусцировать, декомпилировать, дизассемблировать, реверсить, взламывать
+       («кряки»), патчить, распаковывать или иначе вмешиваться в собранные версии
+       программы, а также пытаться получить, извлечь, вычислить или обойти ключ
+       шифрования, зашифрованные правила (в т. ч. rules_private.rs.enc) и
+       заключённые в них правила детекта любым способом;
+   (б) изучать, анализировать, прощупывать или тестировать поведение детекта,
+       его выводы и результаты (в т. ч. запуская программу против читов и смотря,
+       что она находит) с целью создать, улучшить, исправить, подогнать, скрыть
+       или обфусцировать чит, хак-клиент, инжектор и подобное ПО так, чтобы оно
+       не обнаруживалось этой программой.
+3. Нарушение раздела 2 автоматически прекращает все права по этой лицензии.

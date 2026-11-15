@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gas Checker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="window">
+    <header class="titlebar" data-tauri-drag-region>
+      <div class="titlebar-name" data-tauri-drag-region><img src="logo.svg" alt="" width="16" height="16">Gas Checker</div>
+      <div class="titlebar-buttons">
+        <button id="btn-min" aria-label="Свернуть"><svg viewBox="0 0 10 10"><path d="M1 5h8"/></svg></button>
+        <button id="btn-close" class="close" aria-label="Закрыть"><svg viewBox="0 0 10 10"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7"/></svg></button>
+      </div>
+    </header>
+
+    <!-- 1. PIN entry -->
+    <section class="screen" id="screen-start">
+      <div class="hero">
+        <div class="logo-ring"><img src="logo.svg" alt="" width="64" height="64"></div>
+        <h1>Gas Checker</h1>
+        <p class="muted">Введите код, который дал модератор</p>
+      </div>
+      <form id="pin-form" autocomplete="off">
+        <div class="pin-inputs" id="pin-inputs">
+          <input aria-label="Символ 1"><input aria-label="Символ 2"><input aria-label="Символ 3"><span class="pin-dash"></span><input aria-label="Символ 4"><input aria-label="Символ 5"><input aria-label="Символ 6">
+        </div>
+        <p class="error" id="pin-error" role="alert"></p>
+        <button class="btn primary" type="submit" id="pin-submit">Подключиться</button>
+      </form>
+    </section>
+
+    <!-- 2. Consent -->
+    <section class="screen" id="screen-ready" hidden>
+      <div class="hero">
+        <div class="logo-ring connected"><img src="logo.svg" alt="" width="64" height="64"></div>
+        <h1 id="ready-title">Подключено</h1>
+        <p class="muted" id="ready-subtitle"></p>
+      </div>
+      <div class="notice">
+        <b>Что делает чекер</b>
+        <ul>
+          <li>Ищет <code>.jar</code>-файлы на локальных дисках и проверяет их на сигнатуры читов.</li>
+          <li>Ничего не удаляет, не изменяет и не распаковывает на диск.</li>
+          <li id="ready-upload-note">Модератору уходят только найденные совпадения с путями к файлам, число проверенных JAR и имя ПК.</li>
+        </ul>
+      </div>
+      <p class="muted small center rules-note" hidden></p>
+      <button class="btn primary" id="start-scan">Начать сканирование</button>
+    </section>
+
+    <!-- 3. Scanning -->
+    <section class="screen" id="screen-scan" hidden>
+      <div class="hero">
+        <div class="logo-ring scanning"><img src="logo.svg" alt="" width="64" height="64"></div>
+        <h1>Сканирование</h1>
+        <p class="muted" id="scan-phase">Подготовка…</p>
+      </div>
+      <div class="progress indeterminate" id="scan-bar"><i></i></div>
+      <div class="progress-meta"><span id="scan-count"></span><span id="scan-eta"></span></div>
+      <p class="muted small center" id="everything-hint" hidden></p>
+      <p class="muted small center">Не закрывайте окно до окончания проверки</p>
+    </section>
+
+    <!-- 4. Result -->
+    <section class="screen" id="screen-result" hidden>
+      <div class="verdict" id="verdict">
+        <div class="verdict-icon" id="verdict-icon"></div>
+        <div>
+          <h1 id="verdict-title"></h1>
+          <p class="muted" id="verdict-subtitle"></p>
+        </div>
+      </div>
+      <div class="findings" id="findings"></div>
+      <div class="upload" id="upload-status" hidden></div>
+      <p class="muted small center rules-note" hidden></p>
+      <div class="actions">
+        <button class="btn" id="result-new">Новая проверка</button>
+        <button class="btn primary" id="result-close">Закрыть</button>
+      </div>
+    </section>
+
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

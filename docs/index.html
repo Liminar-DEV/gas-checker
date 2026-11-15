@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://ntfy.sh; img-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Gas Checker — панель модератора</title>
+<link rel="stylesheet" href="panel.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <h1>Gas Checker</h1>
+    <button id="new" class="btn" type="button">Новая проверка</button>
+  </header>
+
+  <section class="card">
+    <div class="label">Код проверки</div>
+    <div id="code" class="code mono"></div>
+    <div class="label">Команда для игрока</div>
+    <pre id="cmd" class="mono cmd"></pre>
+    <div class="row">
+      <button id="copy" class="btn primary" type="button">Скопировать</button>
+      <span class="muted small">Выполнять в cmd, не в PowerShell. Запрос прав администратора (UAC) нормален.</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div id="conn" class="conn"><i class="dot"></i><span id="conn-text">Ожидаем игрока…</span></div>
+    <ol id="steps" class="steps">
+      <li data-step="created">Код создан</li>
+      <li data-step="hello">Игрок подключился <span id="host" class="muted"></span></li>
+      <li data-step="scan">Сканирование <span id="phase" class="muted"></span></li>
+      <li data-step="result">Результат</li>
+    </ol>
+    <div id="bar" class="bar" hidden><i id="bar-fill"></i></div>
+    <div id="stale" class="warn" hidden>Нет данных больше 20 секунд: игрок мог закрыть чекер или пропала связь</div>
+  </section>
+
+  <section id="result" class="card" hidden>
+    <div id="verdict" class="verdict"><span id="v-title"></span><span id="v-sub" class="muted"></span></div>
+    <div id="note" class="muted small" hidden></div>
+    <div id="findings" class="findings"></div>
+    <div id="more" class="muted small" hidden></div>
+    <div id="stats" class="stats"></div>
+  </section>
+
+  <footer class="muted small">Данные проходят через публичный сервис ntfy.sh, код проверки это единственный секрет. Результат присылает сам чекер на ПК игрока: его может подделать тот, кто знает код. Смотрите экран игрока на SS.</footer>
+</main>
+<script src="logic.js"></script>
+<script src="panel.js"></script>
+</body>
+</html>
