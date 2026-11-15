@@ -17,7 +17,8 @@ read the topic, and file paths may contain your Windows user name.
 - **Память:** процессы, которые есть смысл проверить. Только чтение.
 - **Следы запусков:** журналы и кеши Windows, запущенные процессы.
 - При старте скана чекер скачивает SS-утилиты с официальных источников (Everything, JournalTrace, Shellbag Analyzer)
-  в `%TEMP%\GasCheckerTools\` и открывает их; строку поиска для Everything кладёт в буфер обмена.
+  в новую папку со случайным именем `%TEMP%\GasCheckerTools-…` (доступ только у Администраторов и SYSTEM) и открывает их;
+  хеши Everything и JournalTrace проверяются, Shellbag Analyzer без проверки хеша; строку поиска для Everything кладёт в буфер обмена.
 
 Что именно и как ищется, здесь не описано: правила детекта лежат в зашифрованном файле, см.
 [src-tauri/rules/README.md](src-tauri/rules/README.md). Открытая часть правил ловит только клиенты с
