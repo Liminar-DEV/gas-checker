@@ -5,8 +5,11 @@
 //!
 //! The checker runs elevated and starts these tools with the same rights, so they are staged
 //! where a non-elevated process of the same user cannot touch them: every run uses a fresh,
-//! randomly named directory under %TEMP% that is *created* with a DACL limited to Administrators
-//! and SYSTEM (one CreateDirectoryW call, no window between creating and locking it).
+//! randomly named directory under %SystemRoot%\Temp, whose parent ordinary users can neither list,
+//! rename nor delete from, and that is *created* with a DACL limited to Administrators and SYSTEM
+//! (one CreateDirectoryW call, no window between creating and locking it). The Windows directory
+//! comes from GetSystemWindowsDirectoryW, never from an environment variable. %TEMP% is not used:
+//! its owner could rename the directory away and put their own in its place.
 //! Everything and JournalTrace are pinned by SHA-256 and verified before anything is written.
 //! shortcut: Shellbag Analyzer is not pinned (the vendor URL is unversioned), so it relies on
 //! HTTPS and the protected directory only; pin it or verify its signature if the vendor versions it.
@@ -14,7 +17,7 @@
 use std::ffi::OsStr;
 use std::fs;
 use std::io::{Cursor, Write};
-use std::os::windows::ffi::OsStrExt;
+use std::os::windows::ffi::{OsStrExt, OsStringExt};
 use std::os::windows::process::CommandExt;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -26,6 +29,7 @@ use windows_sys::Win32::Security::Authorization::{ConvertStringSecurityDescripto
 use windows_sys::Win32::Security::Cryptography::{BCryptGenRandom, BCRYPT_USE_SYSTEM_PREFERRED_RNG};
 use windows_sys::Win32::Security::SECURITY_ATTRIBUTES;
 use windows_sys::Win32::Storage::FileSystem::CreateDirectoryW;
+use windows_sys::Win32::System::SystemInformation::GetSystemWindowsDirectoryW;
 
 const EVERYTHING_ZIP: &str = "https://www.voidtools.com/Everything-1.4.1.1028.x64.zip";
 const EVERYTHING_ZIP_SHA256: &str = "4f4a9b9299b608d48b065f95fd80b9c095cdc7114cd467cd9b54944b23559dfe";
@@ -75,10 +79,23 @@ fn create_protected_dir(dir: &Path) -> bool {
     created
 }
 
-/// A fresh, randomly named, protected directory under %TEMP%.
-fn secure_tools_dir() -> Option<PathBuf> {
-    let dir = std::env::temp_dir().join(format!("GasCheckerTools-{}", random_hex()?));
+/// The Windows directory (C:\Windows), asked from the OS rather than read from the environment.
+fn windows_dir() -> Option<PathBuf> {
+    let mut buf = [0u16; 260];
+    // SAFETY: `buf` is valid for `buf.len()` UTF-16 units.
+    let len = unsafe { GetSystemWindowsDirectoryW(buf.as_mut_ptr(), buf.len() as u32) } as usize;
+    (len > 0 && len < buf.len()).then(|| PathBuf::from(std::ffi::OsString::from_wide(&buf[..len])))
+}
+
+/// A fresh, randomly named, protected directory directly under `base`.
+fn secure_dir_under(base: &Path) -> Option<PathBuf> {
+    let dir = base.join(format!("GasCheckerTools-{}", random_hex()?));
     create_protected_dir(&dir).then_some(dir)
+}
+
+/// Where the tools are staged: under %SystemRoot%\Temp, which ordinary users cannot tamper with.
+fn secure_tools_dir() -> Option<PathBuf> {
+    secure_dir_under(&windows_dir()?.join("Temp"))
 }
 
 /// Writes a new file; refuses to touch one that already exists.
@@ -201,9 +218,17 @@ mod tests {
     }
 
     #[test]
+    fn windows_dir_is_found_through_the_os_and_has_a_temp() {
+        // Tests stage their dirs under the user's %TEMP% so they can clean up after themselves;
+        // run() uses this admin-only parent instead.
+        let windows = windows_dir().expect("windows dir");
+        assert!(windows.join("Temp").is_dir(), "{windows:?}");
+    }
+
+    #[test]
     fn tools_dirs_are_fresh_and_never_reused() {
-        let a = secure_tools_dir().expect("first protected dir");
-        let b = secure_tools_dir().expect("second protected dir");
+        let a = secure_dir_under(&std::env::temp_dir()).expect("first protected dir");
+        let b = secure_dir_under(&std::env::temp_dir()).expect("second protected dir");
         assert_ne!(a, b);
         assert!(a.is_dir() && b.is_dir());
         // An existing directory must be refused, not reused or re-locked.
@@ -214,7 +239,7 @@ mod tests {
 
     #[test]
     fn write_new_refuses_an_existing_file() {
-        let dir = secure_tools_dir().expect("protected dir");
+        let dir = secure_dir_under(&std::env::temp_dir()).expect("protected dir");
         let file = std::env::temp_dir().join(format!("gc-write-new-{}", random_hex().unwrap()));
         assert!(write_new(&file, b"first"));
         assert!(!write_new(&file, b"second"));
@@ -226,7 +251,7 @@ mod tests {
     /// Reads the directory's real DACL back (SDDL, via `icacls /save`) instead of trusting the call.
     #[test]
     fn tools_dir_is_born_with_only_admin_and_system_access() {
-        let dir = secure_tools_dir().expect("protected dir");
+        let dir = secure_dir_under(&std::env::temp_dir()).expect("protected dir");
         let saved = std::env::temp_dir().join(format!("gc-acl-{}.txt", random_hex().unwrap()));
         let system_root = std::env::var_os("SystemRoot").expect("SystemRoot");
         let status = Command::new(Path::new(&system_root).join("System32").join("icacls.exe"))

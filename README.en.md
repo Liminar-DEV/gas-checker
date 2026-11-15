@@ -86,7 +86,7 @@ Among open-source clients it finds Meteor, Wurst, LiquidBounce and Baritone, for
 
 When a scan starts, the checker downloads SS tools from their official sites (Everything, JournalTrace, Shellbag Analyzer) and opens them. It puts the Everything search string on the clipboard.
 
-The tools go into a new, randomly named folder `%TEMP%\GasCheckerTools-…`. Only Administrators and SYSTEM can access it, so an ordinary process on the player's PC cannot swap files that the checker launches with administrator rights. The SHA-256 of Everything and JournalTrace is pinned in the code: if the hash does not match, the tool is not started. Shellbag Analyzer is not hash-checked because the vendor has no versioned links: it is protected only by HTTPS and the locked folder. The folders stay in `%TEMP%` after a check.
+The tools go into a new, randomly named folder `C:\Windows\Temp\GasCheckerTools-…`. Ordinary users can neither list nor rename the parent folder, and the checker creates the new folder already restricted to Administrators and SYSTEM, so an ordinary process on the player's PC cannot swap files that the checker launches with administrator rights. The SHA-256 of Everything and JournalTrace is pinned in the code: if the hash does not match, the tool is not started. Shellbag Analyzer is not hash-checked because the vendor has no versioned links: it is protected only by HTTPS and the locked folder. The folders stay on disk after a check and can only be deleted as an administrator.
 
 ## Privacy and trust
 
